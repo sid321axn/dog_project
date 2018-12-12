@@ -9,9 +9,9 @@ Welcome to the Convolutional Neural Networks (CNN) project in Term 2 of Machine 
 # About Dataset :
 This dataset contains 133 different categories of breeds of dogs and is already split into train, test, and validation sets. 
 
-Download the ![dog dataset](https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip). Unzip the folder and place the training, testing, and validation datasets in the ``dogImages folder``.
+Download the [dog dataset](https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip). Unzip the folder and place the training, testing, and validation datasets in the ``dogImages folder``.
 
-Download the ![human dataset]. Unzip the folder and place it in the ``lfw folder``. If you are using a Windows machine, you are encouraged to use ![7zip](http://www.7-zip.org/) to extract the folder.
+Download the [human dataset]. Unzip the folder and place it in the ``lfw folder``. If you are using a Windows machine, you are encouraged to use [7zip](http://www.7-zip.org/) to extract the folder.
 
 # Project Instruction :
 
@@ -40,7 +40,8 @@ For **Windows**:
 	set KERAS_BACKEND=tensorflow
 	python -c "from keras import backend"```
   
- 3. (Optional) If you plan to install TensorFlow with GPU support on your local machine, follow the ![guide](https://www.tensorflow.org/install/) to install the necessary **NVIDIA** software on your system. If you are using an EC2 GPU instance, you can skip this step.
+ 3. (Optional) If you plan to install TensorFlow with GPU support on your local machine, follow the
+ [guide](https://www.tensorflow.org/install/) to install the necessary **NVIDIA** software on your system. If you are using an EC2 GPU instance, you can skip this step.
 
 4. Lastly, fire up the Jupyter Notebook and let's get started.
 
