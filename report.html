@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>dog_app</title><script type="text/javascript" src="http://gc.kis.v2.scr.kaspersky-labs.com/9C958C20-BDDA-7D47-A35C-CDC08AE525BD/main.js" charset="UTF-8"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>dog_app</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12124,6 +12124,8 @@ Faces detected in 11.00% of the sample dog dataset.
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>As we can see, the face detector isn't perfect as it finds human faces in 11% of the sample dog photos.</p>
 <p>The the technique we selected for face detection requires a clear view of a face. If we want better performance for a wider variety of photo conditions, we could build a CNN specifically for detecting human faces. The training data should include a diverse set of images from a wide variety of angles, lighting conditions, and partial obscurations (wearing a hat, hand in front of face, etc).</p>
+<p>Haar cascades techniques are good for face detection but there are some more advanced techniques available such as MTCNN Algorithm using Mxnet.</p>
+<h2 id="Working-of-MTCNN">Working of MTCNN<a class="anchor-link" href="#Working-of-MTCNN">&#182;</a></h2><p>The MTCNN algorithm works in three steps and use one neural network for each. The first part is a proposal network. It will predict potential face positions and their bounding boxes like an attention network in Faster R-CNN. The result of this step is a large number of face detections and lots of false detections. The second part uses images and outputs of the first prediction. It makes a refinement of the result to eliminate most of false detections and aggregate bounding boxes. The last part refines even more the predictions and adds facial landmarks predictions (in the original MTCNN implementation).</p>
 
 </div>
 </div>
@@ -13120,6 +13122,33 @@ test_{network} = bottleneck_features['test']</code></pre>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Model-Architecture-:">Model Architecture :<a class="anchor-link" href="#Model-Architecture-:">&#182;</a></h2><ul>
+<li>This time I have used pretrained network Xception model.</li>
+<li>I have obtained the Bottleneck Features for a Xception model.</li>
+<li>Added Global Average pooling layer.</li>
+<li>I also added a fully connected layer with 128 nodes and a ReLU activation function to detect more patterns and a Dropout of<br>
+0.2 to avoid overfitting.</li>
+<li>Add a Dense layer with softmax activation function.The output of this layer would be a vector having 133 units.</li>
+<li>After defining the architecture compiled the model by setting 'categorical_crossentropy' as the loss function, 'adam' as
+optimizer and metrics as 'accuracy'.</li>
+<li>Then, trained the model with 20 epochs and a batch size of 20.</li>
+<li>Also used the checkpointer to save the model which attains the best validation loss.</li>
+<li>Then Load the model weights with the best validation loss.</li>
+<li>Finally, tested the model which attains an accuracy around 82.53%.</li>
+</ul>
+<p>I think this model is suitable for this problem as it has attained the maximum test accuracy of around 82.53% whereas our previous models CNN model, VCG16 model had only achieved an accuracy of 3.7% and 38% respectively.</p>
+<p><strong>Reason for Improvement of Pretrained Model</strong>
+A pre-trained model is a model that was trained on a large benchmark dataset (ImageNet Validation) to solve a problem similar to the one that we want to solve.This is the main reason that pretrained model always provides good performance what we have to do is just fine tuning.</p>
+<p>As these pretrained model shown exceptional result in ImageNet validation task in which images with 1000 categories are classified and our dataset is just a small subset of that dataset.That's why VCG16 and Xception Model shown improved accuracy.
+We just repurposed a pre-trained model for our own needs, we start by removing the original classifier, then we add a new classifier that fits our purposes, and finally we have  fine-tuned our model according to achieve this improved result.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[27]:</div>
@@ -13213,8 +13242,6 @@ _________________________________________________________________
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### TODO: Train the model.</span>
 <span class="n">checkpointer</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;saved_models/weights.best.Xception.hdf5&#39;</span><span class="p">,</span> 
                                <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save_best_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">batch_size</span><span class="o">=</span><span class="mi">25</span>
 
 <span class="n">Xception_breed_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_Xception</span><span class="p">,</span> <span class="n">train_targets</span><span class="p">,</span> 
           <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">valid_Xception</span><span class="p">,</span> <span class="n">valid_targets</span><span class="p">),</span>
@@ -13520,6 +13547,23 @@ Epoch 20/20
 <h3 id="(IMPLEMENTATION)-Test-Your-Algorithm-on-Sample-Images!">(IMPLEMENTATION) Test Your Algorithm on Sample Images!<a class="anchor-link" href="#(IMPLEMENTATION)-Test-Your-Algorithm-on-Sample-Images!">&#182;</a></h3><p>Test your algorithm at least six images on your computer.  Feel free to use any images you like.  Use at least two human and two dog images.</p>
 <p><strong>Question 6:</strong> Is the output better than you expected :) ?  Or worse :( ?  Provide at least three possible points of improvement for your algorithm.</p>
 <p><strong>Answer:</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The output of the my pretrained Xception model seems quite good. It is above my expectation.It's providing an accuracy of 82.54 %.</p>
+<ol>
+<li><p>Further it could be make more accurate by training with more images for the given dog breeds.For example when I added image of dog breed pitsbull,it wrongly predicted as American_staffordshire_terrier which could be resolved by adding more images of the dog breed.</p>
+</li>
+<li><p>From point of view, as the model is correctly identifying human image as human, dog image as dog but in case of cat or other animal it is showing 'This is something else'. I think this should be made more generalized so that in case of other animal it should predict 'it is other animal' and apart from animal and human it should predict 'This is something else'.</p>
+</li>
+<li><p>I have also tried the Data Augmentation but it made the training extremely slow. but I strongly believe that Data Augumentation can further improve the results of the model in real world scenario.</p>
+</li>
+</ol>
 
 </div>
 </div>
@@ -13853,20 +13897,6 @@ Epoch 20/20
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The output of the my CNN model based on Xception seems quite good.It's providing an accuracy of 82.54 %.</p>
-<ol>
-<li>Further it could be make more accurate by training with more images for the given dog breeds.</li>
-<li>More Breeds can be added</li>
-<li>Actually I have tried the Data Augmentation but it made the training extrmely slow so I jave just remove it but I strongly believe that Data Augumentation can improve the results manifold.</li>
-</ol>
-
-</div>
-</div>
 </div>
     </div>
   </div>
